@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}Transfer · LedgerLeaf{% endblock %}
+{% block content %}
+<h1>Transfer money</h1>
+{% if error %}<p class="error" role="alert" data-testid="transfer-error">{{ error }}</p>{% endif %}
+{% if done %}<p class="ok" role="status" data-testid="transfer-success">Transferred ${{ done.amount }} from {{ done['from'] }} to {{ done.to }}. Reference #{{ done.id }}.</p>{% endif %}
+<form method="post" data-testid="transfer-form">
+  <label for="from_account">From</label>
+  <select id="from_account" name="from_account" data-testid="transfer-from">
+    {% for a in accounts %}<option value="{{ a.number }}">{{ a.type }} {{ a.number }} (${{ '{:,.2f}'.format(a.balance) }})</option>{% endfor %}
+  </select>
+  <label for="to_account">To account number</label>
+  <input id="to_account" name="to_account" placeholder="100-002" data-testid="transfer-to" required>
+  <label for="amount">Amount ($)</label>
+  <input id="amount" name="amount" type="number" step="0.01" min="0.01" data-testid="transfer-amount" required>
+  <label for="memo">Memo (optional)</label>
+  <input id="memo" name="memo" maxlength="140" data-testid="transfer-memo">
+  <p class="hint">Maximum ${{ '{:,.2f}'.format(limit) }} per transfer.</p>
+  <button type="submit" data-testid="transfer-submit">Transfer</button>
+</form>
+{% endblock %}

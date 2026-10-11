@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Accounts · LedgerLeaf{% endblock %}
+{% block content %}
+<h1>Hello, {{ user.name.split()[0] }}</h1>
+<table data-testid="accounts-table">
+  <thead><tr><th>Account</th><th>Type</th><th class="num">Balance</th></tr></thead>
+  <tbody>
+  {% for a in accounts %}
+    <tr data-testid="account-row-{{ a.number }}"><td>{{ a.number }}</td><td>{{ a.type }}</td>
+      <td class="num" data-testid="balance-{{ a.number }}">${{ '{:,.2f}'.format(a.balance) }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><a class="button" href="/transfer" data-testid="start-transfer">Make a transfer</a></p>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Test outbox · LedgerLeaf{% endblock %}
+{% block content %}
+<h1>Test outbox</h1>
+<p class="hint">Simulated emails. In a real bank these would go to the customer's inbox.</p>
+{% if not mails %}<p data-testid="outbox-empty">No emails yet.</p>{% endif %}
+<ul data-testid="outbox-list">
+{% for m in mails %}<li><strong>{{ m.subject }}</strong> to {{ m.to }} at {{ m.sent }} &mdash; <a href="{{ m.link }}" data-testid="reset-link">{{ m.link }}</a></li>{% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Open an account · LedgerLeaf{% endblock %}
+{% block content %}
+<h1>Open an account</h1>
+{% if errors %}<ul class="error" role="alert" data-testid="register-errors">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+<form method="post" data-testid="register-form">
+  <label for="name">Full name</label>
+  <input id="name" name="name" data-testid="register-name" required>
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" data-testid="register-email" required>
+  <label for="dob">Date of birth</label>
+  <input id="dob" name="dob" type="date" data-testid="register-dob" required>
+  <label for="password">Password</label>
+  <input id="password" name="password" type="password" data-testid="register-password" required>
+  <p class="hint">At least 8 characters, with upper case, lower case and a number.</p>
+  <button type="submit" data-testid="register-submit">Create account</button>
+</form>
+{% endblock %}

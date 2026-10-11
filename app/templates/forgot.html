@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Reset password · LedgerLeaf{% endblock %}
+{% block content %}
+<h1>Reset your password</h1>
+{% if message %}<p class="ok" role="status" data-testid="forgot-message">{{ message }}</p>{% endif %}
+<form method="post" data-testid="forgot-form">
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" data-testid="forgot-email" required>
+  <button type="submit" data-testid="forgot-submit">Send reset link</button>
+</form>
+<p class="hint">Demo: reset emails appear in the <a href="/outbox" data-testid="outbox-link">test outbox</a>.</p>
+{% endblock %}
