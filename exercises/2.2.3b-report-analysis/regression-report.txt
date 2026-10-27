@@ -1,0 +1,39 @@
+LedgerLeaf regression run  |  build 1.0.2  |  2026-10-26 21:00-21:14  |  runner: nightly-ci
+-------------------------------------------------------------------------------------------
+21:00:05  TC-01-01  PASS   Register a valid adult customer                 (2.1s)
+21:00:08  TC-01-02  PASS   Duplicate email is rejected                     (1.9s)
+21:00:11  TC-01-03  PASS   Weak password is rejected                       (1.8s)
+21:00:14  TC-01-04  FAIL   A 17-year-old cannot register                   (2.0s)
+          AssertionError: expected error "You must be at least 18 years old to open an account."
+          but page showed "Welcome to LedgerLeaf" (dob=2009-10-27)
+21:00:18  TC-02-01  PASS   Valid log-in shows the Accounts page            (1.5s)
+21:00:21  TC-02-02  PASS   Invalid log-in shows one generic error          (1.6s)
+21:00:25  TC-02-03  FAIL   Account locks at the 3rd failed attempt         (3.9s)
+          AssertionError: after attempt 3 expected "Your account is locked. Reset your password to unlock it."
+          but got "Invalid email or password."
+21:00:31  TC-02-05  FAIL   A locked account shows the "locked" message     (4.2s)
+          AssertionError: expected "Your account is locked..." after 3 failed attempts, got "Invalid email or password."
+21:00:38  TC-03-01  PASS   Same message for an unregistered email          (1.4s)
+21:00:41  TC-03-02  PASS   Reset link appears in the outbox                (1.7s)
+21:00:46  TC-03-04  FAIL   Password reset unlocks a locked account         (4.0s)
+          PreconditionError: account alex.tester@ledgerleaf.test is not locked after 3 failed attempts
+21:02:10  TC-04-01  FAIL   Customer sees own accounts                      (30.0s)
+          ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=5000): Max retries exceeded
+          (Failed to establish a new connection: [WinError 10061] connection refused)
+21:02:40  TC-04-02  FAIL   Balances use $ and two decimals                 (30.0s)
+          ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=5000): Max retries exceeded
+          (Failed to establish a new connection: [WinError 10061] connection refused)
+21:03:15  TC-05-01  PASS   Transfer $100.00 succeeds                       (2.2s)
+21:03:19  TC-05-03  FAIL   Transfer exactly $5,000.00 succeeds             (6.1s)
+          Element 'css:[data-testid="transfer-success"]' not visible after 5 seconds.
+          Page error: "The maximum per transfer is $5,000.00."
+21:03:27  TC-05-04  PASS   Transfer $4,999.99 succeeds                     (2.3s)
+21:03:31  TC-05-08  PASS   Transfer with a memo succeeds                   (8.4s)
+          attempt 1: FAIL  Element 'css:[data-testid="transfer-success"]' not visible after 5 seconds.
+          attempt 2: PASS  (auto-retry)
+21:03:42  TC-NAV-01 PASS   Log-out link is shown on the Transfer page      (1.2s)
+21:03:45  TC-API-02 FAIL   API rejects a negative transfer amount          (0.4s)
+          AssertionError: POST /api/transfers amount=-10.00 expected status 400, got 201
+21:03:47  TC-99     PASS   debug_print_session                             (0.1s)
+-------------------------------------------------------------------------------------------
+SUMMARY: 20 run, 12 passed, 8 failed
