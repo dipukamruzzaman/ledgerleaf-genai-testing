@@ -1,35 +1,43 @@
 # HO-2.3.1 — Observe: metrics for evaluating GenAI results
 
 **Syllabus link:** GenAI-2.3.1 (K2) · HO-2.3.1 (H0) · **Date:** 2026-10-27
-**Input:** ai-output.md (12 AI test cases) scored against reference.md (10 conditions)
+**Input:** ai-output.md (12 AI test cases) scored against reference.md (10 conditions = test oracle)
 
 ## Step 1 — Mark each AI test case
-| # | Matches Ref (R1–R10 or –) | Expected result correct? (Y/N) | Duplicate? (Y/N) | Invented rule/feature? (Y/N) |
-|---|---|---|---|---|
-| 1 | R2 |  Y | N | N |
-| 2 | - | Y | N | N |
-| 3 | R4 | N | N | N |
-| 4 | R5 | Y | N | N |
-| 5 |  R3| Y | N | N |
-| 6 |  R1 | Y | N | N |
-| 7 | R6 |  Y | N | N |
-| 8 |  R8| Y | N | N |
-| 9 | - |  Y | Y | N |      Duplicate to TC05 "Just below maximum"
-| 10 | - | Y | N | Y |      Not mentioned in reference: [daily limit exceeded]
-| 11 | - | N | N | Y |      Nothing referenced.
-| 12 | R2 | Y | Y | N |     Duplicate of TC01
+| # | Matches Ref | Expected correct? | Duplicate? | Invented? | Note |
+|---|---|---|---|---|---|
+| 1 | R2 | Y | N | N | |
+| 2 | – | Y | N | N | Valid partition, not in reference |
+| 3 | R4 | **N** | N | N | Expects 5,000.00 rejected — rule says accepted |
+| 4 | R5 | Y | N | N | |
+| 5 | R3 | Y | N | N | |
+| 6 | R1 | Y | N | N | |
+| 7 | R6 | Y | N | N | |
+| 8 | R8 | Y | N | N | |
+| 9 | R3 | Y | **Y** | N | Duplicate of #5 |
+| 10 | – | N (strict) | N | **Y** | Outcome right, reason invented ("daily limit") |
+| 11 | – | N | N | **Y** | Invented feature (currency conversion) |
+| 12 | R2 | Y | **Y** | N | Duplicate of #1 |
 
-## Step 2 — Calculate the metrics
-| Metric (syllabus) | How we measure it here | Value |
+## Step 2 — Metrics
+| Metric | How measured | Value |
 |---|---|---|
-| **Recall** | Ref conditions covered ÷ 10 | 80% |
-| **Accuracy** | Test cases with a correct expected result ÷ 12 | 10/12=83% |
-| **Precision** | Test cases that are relevant (no invented rule/feature) ÷ 12 | 10/12=83% |
-| **Diversity** | Unique test cases (not duplicates) ÷ 12 | 10/12=83% |
-| **Relevance / contextual fit** | Number of test cases with invented rules or features | 10/12=83% |
-| **Time efficiency** | AI ~20 s vs human ~20 min | ~60× faster |
+| Recall | Reference conditions covered ÷ 10 (R1–R6, R8) | **70%** — missing R7 (3 decimals), R9 (= balance), R10 (not a number) |
+| Accuracy | Correct expected results ÷ 12 | **75%** strict (9/12) · 83% if #10 accepted |
+| Precision | Relevant test cases (no invented rule/feature) ÷ 12 | **83%** (10/12) |
+| Diversity | Unique test cases ÷ 12 | **83%** (10/12) |
+| Relevance / contextual fit | Test cases with invented rules/features | **2** (#10, #11) |
+| Time efficiency | AI ~20 s vs human ~20 min | ~60× faster |
 
-## Step 3 — Which single test case is the most dangerous, and why?
-(Hint: think about DEF-001.)
-TC011 - NOTHING DOCUMENTED REGARDING THAT. 
+My first calculation gave Recall 80% (miscounted distinct references) and expressed Relevance as a % — corrected.
+
+## Step 3 — Most dangerous test case: #3
+#3 looks like a perfect boundary test, but its expected result ("5,000.00 rejected") matches the behaviour of
+DEF-001. Run against the buggy app it PASSES — hiding the defect. #11 (currency) is obviously wrong and gets caught
+in review; #3 is plausible and silently encodes the bug.
+
 ## Findings
+1. Metrics need a reference (oracle); without one, plausible-looking output feels "correct".
+2. Each metric shows a different weakness: recall → missing conditions; diversity → duplicates; relevance → invented rules.
+3. A wrong expected result that matches the bug's behaviour is the most dangerous error: it turns a test into a defect-hider.
+4. Fast output (60×) is only valuable after evaluation; one run is not enough — metrics should use statistically relevant data.
